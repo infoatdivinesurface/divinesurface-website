@@ -1,23 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    padding-top: 20px;
-}
-
-#app {
-    margin-top: 20px;
-}
-
-button {
-    font-size: 1.2rem;
-}
-
-h3 {
-    color: #007bff;
-}
-
-#user-data ul {
-    padding-left: 0;
-}
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -39,3 +19,63 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+// Create the Petite Vue app and mount it
+PetiteVue.createApp(appData).mount("#app");
+
+// Fetch user data from Firebase Firestore and display it
+const userList = document.getElementById("user-list");
+
+db.collection("users").get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const li = document.createElement("li");
+            li.classList.add("list-group-item");
+            li.textContent = `Name: ${doc.data().name}, Age: ${doc.data().age}`;
+            userList.appendChild(li);
+        });
+    })
+    .catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+
+// Adding user to Firestore
+const form = document.getElementById("user-form");
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // Get user input values
+    const name = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+
+    // Add user to Firestore
+    db.collection("users").add({
+        name: name,
+        age: age
+    })
+    .then(() => {
+        console.log("User added!");
+        alert("User added successfully!");
+        
+        // Clear the form
+        form.reset();
+
+        // Refresh the user list to show the newly added user
+        userList.innerHTML = '';
+        db.collection("users").get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const li = document.createElement("li");
+                    li.classList.add("list-group-item");
+                    li.textContent = `Name: ${doc.data().name}, Age: ${doc.data().age}`;
+                    userList.appendChild(li);
+                });
+            })
+            .catch((error) => {
+                console.error("Error getting documents: ", error);
+            });
+    })
+    .catch((error) => {
+        console.error("Error adding user: ", error);
+    });
+});
