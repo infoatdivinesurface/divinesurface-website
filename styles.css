@@ -1,36 +1,20 @@
-// Initialize Firebase with your configuration
-const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id"
-};
+body {
+    font-family: Arial, sans-serif;
+    padding-top: 20px;
+}
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(app);
+#app {
+    margin-top: 20px;
+}
 
-// Setup Petite Vue app for dynamic interactivity
-const appData = {
-    count: 0
-};
+button {
+    font-size: 1.2rem;
+}
 
-PetiteVue.createApp(appData).mount("#app");
+h3 {
+    color: #007bff;
+}
 
-// Fetch user data from Firebase Firestore
-const userList = document.getElementById("user-list");
-
-db.collection("users").get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const li = document.createElement("li");
-            li.classList.add("list-group-item");
-            li.textContent = `Name: ${doc.data().name}, Age: ${doc.data().age}`;
-            userList.appendChild(li);
-        });
-    })
-    .catch((error) => {
-        console.error("Error getting documents: ", error);
-    });
+#user-data ul {
+    padding-left: 0;
+}
